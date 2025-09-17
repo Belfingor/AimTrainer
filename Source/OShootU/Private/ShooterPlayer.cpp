@@ -9,6 +9,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
+#include "HUD/AimHUD.h"
+#include "HUD/AimOverlay.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -45,6 +47,7 @@ void AShooterPlayer::BeginPlay()
 		DefaultWeapon->Equip(SkeletalMesh, FName("WeaponSocket"), this);
 		Weapon = DefaultWeapon;
 	}
+	InitOverlay();
 }
 
 void AShooterPlayer::Look(const FInputActionValue& Value)
@@ -80,13 +83,41 @@ void AShooterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
-
-FVector AShooterPlayer::GetCameraForwardVector()
+void AShooterPlayer::InitOverlay()
 {
-	return ViewCamera->GetForwardVector();
+	if (APlayerController* PlayerController = GetPlayerController())
+	{
+		AAimHUD* AimHUD = Cast<AAimHUD>(PlayerController->GetHUD());
+		if (AimHUD)
+		{
+			AimOverlay = AimHUD->GetAimOverlay();
+			if (AimOverlay)
+			{
+				AimOverlay->SetHealthText(3);
+			}
+		}
+	}
 }
 
-FVector AShooterPlayer::GetCameraLocation()
+APlayerController* AShooterPlayer::GetPlayerController()
 {
-	return ViewCamera->GetComponentLocation();
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	return PlayerController;
+}
+
+bool AShooterPlayer::GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection)
+{
+	if (APlayerController* PlayerController = GetPlayerController())
+	{
+		int32 ViewportSizeX;
+		int32 ViewportSizeY;
+		PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+
+		FVector2D CrosshairScreenLocation(ViewportSizeX * 0.5f, ViewportSizeY * 0.5f);
+		PlayerController->DeprojectScreenPositionToWorld(CrosshairScreenLocation.X, CrosshairScreenLocation.Y, OutWorldLocation, OutWolrdDirection);
+
+		return true;
+	}	
+	return false;
 }

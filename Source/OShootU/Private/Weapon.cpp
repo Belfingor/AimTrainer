@@ -40,12 +40,27 @@ void AWeapon::Shoot()
 {
 	AShooterPlayer* MyOwner = Cast<AShooterPlayer>(GetOwner());
 	if (!MyOwner) return;
+	FVector StartLocation;
+	FVector ForwardVector;
+	MyOwner->GetCrosshairTrace(StartLocation, ForwardVector);
+	FVector EndLocation = ForwardVector * 1000000.f;
 
-	FVector ForwardVector = MyOwner->GetCameraForwardVector();
-	FVector StartLocation = MyOwner->GetCameraLocation();
+	FHitResult Hit;
+	FCollisionQueryParams Params;
+
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(MyOwner);
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_EngineTraceChannel1, Params))
+	{	
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, .1f);
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .1f);
+	}
 
 
-	DrawDebugLine(GetWorld(), StartLocation, ForwardVector * 10000.f, FColor::Red, false, 1.0f, 0, .1f);
 
 }
 

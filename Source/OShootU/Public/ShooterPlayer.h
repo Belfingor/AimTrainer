@@ -14,6 +14,7 @@ class UCameraComponent;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class AWeapon;
+class UAimOverlay; 
 
 
 UCLASS()
@@ -28,6 +29,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
 
 	//-------------------------------Input Maping----------------------------------
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -44,15 +46,18 @@ protected:
 	TObjectPtr<AWeapon> Weapon;
 
 private:
+	void InitOverlay();
+	APlayerController* GetPlayerController();
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
-
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	TSubclassOf<AWeapon> WeaponClass;
+	UPROPERTY()
+	TObjectPtr<UAimOverlay> AimOverlay;
 
 public:
-	FVector GetCameraForwardVector();
-	FVector GetCameraLocation();
+	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 };
