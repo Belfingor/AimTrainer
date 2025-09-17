@@ -11,6 +11,7 @@
 #include "Engine/World.h"
 #include "HUD/AimHUD.h"
 #include "HUD/AimOverlay.h"
+#include "Math/UnrealMathUtility.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -26,6 +27,7 @@ AShooterPlayer::AShooterPlayer()
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(SkeletalMesh);
 
+	MouseSensitivityModifierRange = FMath::Clamp(MouseSensitivityModifier, 0.1f, 1.f);
 }
 
 void AShooterPlayer::BeginPlay()
@@ -55,8 +57,8 @@ void AShooterPlayer::Look(const FInputActionValue& Value)
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController())
 	{
-		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(-LookAxisValue.Y);
+		AddControllerYawInput(LookAxisValue.X * MouseSensitivityModifier);
+		AddControllerPitchInput(-LookAxisValue.Y * MouseSensitivityModifier);
 	}
 }
 

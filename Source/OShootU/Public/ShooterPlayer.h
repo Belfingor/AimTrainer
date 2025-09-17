@@ -30,7 +30,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-
 	//-------------------------------Input Maping----------------------------------
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> PlayerMappingContext;
@@ -44,6 +43,9 @@ protected:
 	//-----------------------------------------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeapon> Weapon;
+	UPROPERTY(EditAnywhere, Category = "Settings")
+	float MouseSensitivityModifier = 1.f;
+	float MouseSensitivityModifierRange;
 
 private:
 	void InitOverlay();

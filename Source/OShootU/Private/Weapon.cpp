@@ -4,6 +4,7 @@
 #include "Weapon.h"
 #include "Components/StaticMeshComponent.h"
 #include "ShooterPlayer.h"
+#include "Ball.h"
 
 AWeapon::AWeapon()
 {
@@ -11,7 +12,6 @@ AWeapon::AWeapon()
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
 	WeaponMesh->SetupAttachment(GetRootComponent());
-
 }
 
 void AWeapon::BeginPlay()
@@ -51,16 +51,22 @@ void AWeapon::Shoot()
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(MyOwner);
 
-	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_EngineTraceChannel1, Params))
+	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, Params))
 	{	
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, .1f);
+		//Did hit something
+		//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, .5f);
+		DrawDebugPoint(GetWorld(), Hit.Location, 10.0f, FColor::Yellow, false, 3.0f);
+		
+		ABall* DamagedBall = Cast<ABall>(Hit.GetActor());
+		if (DamagedBall)
+		{
+			DamagedBall->TakeHit();
+		}
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .1f);
+		//Did not hit anything
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .5f);
 	}
-
-
-
 }
 
