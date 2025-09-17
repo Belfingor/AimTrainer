@@ -25,6 +25,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WallMesh;
 	
-	TArray<ABall> BallsOnWall;
+	TArray<ABall*> BallsOnWall;
 
 };
