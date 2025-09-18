@@ -63,7 +63,7 @@ void AWeapon::Shoot()
 			DamagedBall->TakeHit();
 		}
 	}
-	else
+		else
 	{
 		//Did not hit anything
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .5f);

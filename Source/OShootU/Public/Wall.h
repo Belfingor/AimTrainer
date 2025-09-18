@@ -17,14 +17,25 @@ class OSHOOTU_API AWall : public AActor
 public:	
 	AWall();
 	virtual void Tick(float DeltaTime) override;
+	void RemoveBallFromArray(ABall* BallToRemove);
 
 protected:
 	virtual void BeginPlay() override;
-
+	
 private:
+	void SpawnBalls();
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WallMesh;
 	
 	TArray<ABall*> BallsOnWall;
 
+	UPROPERTY(EditAnywhere, Category = "Targets")
+	TSubclassOf<ABall> BallClass;
+
+	UPROPERTY(EditAnywhere, Category = "Targets")
+	float EdgeOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Targets")
+	int32 BallsNum;
 };

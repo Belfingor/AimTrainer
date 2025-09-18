@@ -3,6 +3,7 @@
 
 #include "Ball.h"
 #include "Components/StaticMeshComponent.h"
+#include "Wall.h"
 
 ABall::ABall()
 {
@@ -16,7 +17,7 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ABall::Tick(float DeltaTime)
@@ -27,6 +28,9 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::TakeHit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Yay I was hit!"))
+	AWall* MyOwner = Cast<AWall>(GetOwner());
+	if (!MyOwner) return;
+	MyOwner->RemoveBallFromArray(this);
+	Destroy();
 }
 
