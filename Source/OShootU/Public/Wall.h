@@ -7,7 +7,6 @@
 #include "Wall.generated.h"
 
 class ABall;
-class UStaticMeshComponent;
 
 UCLASS()
 class OSHOOTU_API AWall : public AActor
@@ -38,4 +37,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Targets")
 	int32 BallsNum;
+
+	const TArray<FLinearColor> ArrBallColors{ FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue};
 };

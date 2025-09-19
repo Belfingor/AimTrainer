@@ -24,4 +24,10 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> BallMesh;
+
+	FLinearColor BallColor;
+
+public: //Setters and Getters
+	void SetBallColor(FLinearColor Color);
+	FLinearColor GetBallColor() { return BallColor; }
 };

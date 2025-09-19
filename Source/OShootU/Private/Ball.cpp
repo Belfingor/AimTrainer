@@ -3,6 +3,7 @@
 
 #include "Ball.h"
 #include "Components/StaticMeshComponent.h"
+//#include "Materials/MaterialInstance.h"
 #include "Wall.h"
 
 ABall::ABall()
@@ -34,3 +35,13 @@ void ABall::TakeHit()
 	Destroy();
 }
 
+void ABall::SetBallColor(FLinearColor Color)
+{
+	UMaterialInterface* BaseMaterial = BallMesh->GetMaterial(0);
+	UMaterialInstanceDynamic* DynamicMaterialInstance = BallMesh->CreateAndSetMaterialInstanceDynamicFromMaterial(0, BaseMaterial);
+	if (DynamicMaterialInstance)
+	{
+		DynamicMaterialInstance->SetVectorParameterValue(FName("ColorParam"), Color);
+		BallColor = Color;
+	}
+}
