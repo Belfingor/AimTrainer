@@ -7,6 +7,7 @@
 #include "Wall.generated.h"
 
 class ABall;
+class AShooterPlayer;
 
 UCLASS()
 class OSHOOTU_API AWall : public AActor
@@ -16,13 +17,16 @@ class OSHOOTU_API AWall : public AActor
 public:	
 	AWall();
 	virtual void Tick(float DeltaTime) override;
+	void CheckIfNeedResetBalls();
 	void RemoveBallFromArray(ABall* BallToRemove);
-
+	
 protected:
 	virtual void BeginPlay() override;
 	
 private:
 	void SpawnBalls();
+	AShooterPlayer* GetShooterPlayer();
+	void ResettAllBallsOnWall();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WallMesh;
@@ -37,6 +41,4 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Targets")
 	int32 BallsNum;
-
-	const TArray<FLinearColor> ArrBallColors{ FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue};
 };

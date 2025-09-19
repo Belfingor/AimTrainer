@@ -12,6 +12,7 @@
 #include "HUD/AimHUD.h"
 #include "HUD/AimOverlay.h"
 #include "Math/UnrealMathUtility.h"
+#include "ObjectTypes.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -33,7 +34,7 @@ AShooterPlayer::AShooterPlayer()
 void AShooterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -50,6 +51,8 @@ void AShooterPlayer::BeginPlay()
 		Weapon = DefaultWeapon;
 	}
 	InitOverlay();
+
+	SetRandomActiveColor();
 }
 
 void AShooterPlayer::Look(const FInputActionValue& Value)
@@ -105,6 +108,12 @@ APlayerController* AShooterPlayer::GetPlayerController()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	return PlayerController;
+}
+
+void AShooterPlayer::SetRandomActiveColor()
+{
+	int32 Selection = FMath::RandRange(0, ArrBallColors.Num() - 1);
+	ActiveColor = ArrBallColors[Selection];
 }
 
 bool AShooterPlayer::GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection)

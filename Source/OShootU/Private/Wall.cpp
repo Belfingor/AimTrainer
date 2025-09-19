@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Wall.h"
-#include "Components/StaticMeshComponent.h"
 #include "Ball.h"
+#include "ShooterPlayer.h"
+#include "Components/StaticMeshComponent.h"
+#include "ObjectTypes.h"
+
 
 AWall::AWall()
 {
@@ -26,6 +29,32 @@ void AWall::Tick(float DeltaTime)
 	{
 		int32 BallsLeft = BallsOnWall.Num();
 		GEngine->AddOnScreenDebugMessage( 1, 5.0f, FColor::Red, FString::Printf(TEXT("Balls Left: %d"), BallsLeft));
+	}
+
+	//CheckIfNeedResetBalls();
+}
+
+void AWall::CheckIfNeedResetBalls()
+{
+	FLinearColor CurrentActiveColor;
+	AShooterPlayer* Player = GetShooterPlayer();
+	if (Player)
+	{
+		CurrentActiveColor = Player->GetActiveColor();
+		bool IsActiveColorPresentOnWall = false;
+		for (auto Ball : BallsOnWall)
+		{
+			if (Ball->GetBallColor() == CurrentActiveColor)
+			{
+				IsActiveColorPresentOnWall = true;
+				break; // Found at least one matching color. No point of iterating further
+			}
+		}
+		if (!IsActiveColorPresentOnWall)
+		{
+			//Remove all balls
+			ResettAllBallsOnWall();
+		}
 	}
 }
 
@@ -71,4 +100,25 @@ void AWall::SpawnBalls()
 
 		BallsOnWall.Add(SpawnedBall);
 	}
+}
+
+AShooterPlayer* AWall::GetShooterPlayer()
+{
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return nullptr;
+	AShooterPlayer* Player = Cast<AShooterPlayer>(PlayerController->GetPawn());
+
+	return Player;
+}
+
+void AWall::ResettAllBallsOnWall()
+{
+	for (auto Ball : BallsOnWall)
+	{
+		Ball->Destroy();
+	}
+	BallsOnWall.Empty();
+	SpawnBalls();
 }

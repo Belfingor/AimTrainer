@@ -7,6 +7,7 @@
 #include "Ball.generated.h"
 
 class UStaticMeshComponent;
+class AShooterPlayer;
 
 UCLASS()
 class OSHOOTU_API ABall : public AActor
@@ -17,11 +18,14 @@ public:
 	ABall();
 	virtual void Tick(float DeltaTime) override;
 	void TakeHit();
+	void RemoveBallFromWall();
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	AShooterPlayer* GetShooterPlayer();
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> BallMesh;
 

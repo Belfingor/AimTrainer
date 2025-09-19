@@ -3,15 +3,15 @@
 
 #include "Ball.h"
 #include "Components/StaticMeshComponent.h"
-//#include "Materials/MaterialInstance.h"
 #include "Wall.h"
+#include "ShooterPlayer.h"
 
 ABall::ABall()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Mesh"));
-	BallMesh->SetupAttachment(GetRootComponent());
+	RootComponent = BallMesh;
 
 }
 
@@ -19,6 +19,17 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+AShooterPlayer* ABall::GetShooterPlayer()
+{
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return nullptr;
+	AShooterPlayer* Player = Cast<AShooterPlayer>(PlayerController->GetPawn());
+
+	return Player;
 }
 
 void ABall::Tick(float DeltaTime)
@@ -29,10 +40,20 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::TakeHit()
 {
+	AShooterPlayer* Player = GetShooterPlayer();
+	if (Player && Player->GetActiveColor() == GetBallColor())
+	{
+		RemoveBallFromWall();
+	}
+}
+
+void ABall::RemoveBallFromWall()
+{
 	AWall* MyOwner = Cast<AWall>(GetOwner());
 	if (!MyOwner) return;
 	MyOwner->RemoveBallFromArray(this);
 	Destroy();
+	MyOwner->CheckIfNeedResetBalls();
 }
 
 void ABall::SetBallColor(FLinearColor Color)

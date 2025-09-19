@@ -50,6 +50,7 @@ protected:
 private:
 	void InitOverlay();
 	APlayerController* GetPlayerController();
+	void SetRandomActiveColor();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;
@@ -59,7 +60,10 @@ private:
 	TSubclassOf<AWeapon> WeaponClass;
 	UPROPERTY()
 	TObjectPtr<UAimOverlay> AimOverlay;
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	FLinearColor ActiveColor;
 
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
+	FLinearColor GetActiveColor() { return ActiveColor; }
 };
