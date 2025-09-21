@@ -63,6 +63,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	FLinearColor ActiveColor;
 
+	FTimerHandle ColorTimer;
+	float ActiveColorTime = 5.f;
+
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 	FLinearColor GetActiveColor() { return ActiveColor; }

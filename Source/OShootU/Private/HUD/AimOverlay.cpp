@@ -4,6 +4,7 @@
 #include "HUD/AimOverlay.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "ObjectTypes.h"
 
 void UAimOverlay::SetCrosshairColor()
 {
@@ -18,4 +19,21 @@ void UAimOverlay::SetHealthText(int32 Health)
 void UAimOverlay::SetScoreCountText(int32 Score)
 {
 	//Will Set Text here
+}
+
+void UAimOverlay::SetActiveColorText(EBallColors Color)
+{
+	switch (Color)
+	{
+	case EBallColors::EBC_Red:
+		ActiveColorText->SetText(FText::FromString("Red"));
+		break;
+	case EBallColors::EBC_Green: 
+		ActiveColorText->SetText(FText::FromString("Green"));
+		break;
+	case EBallColors::EBC_Blue:
+		ActiveColorText->SetText(FText::FromString("Blue"));
+		break;
+
+	}
 }

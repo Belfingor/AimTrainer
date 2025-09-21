@@ -73,6 +73,12 @@ void AShooterPlayer::Shoot(const FInputActionValue& Value)
 void AShooterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	float TimeTimeRemaining = GetWorldTimerManager().GetTimerRemaining(ColorTimer);
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Timer remaining: %f"), TimeTimeRemaining));
+	}
 }
 
 void AShooterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -112,8 +118,20 @@ APlayerController* AShooterPlayer::GetPlayerController()
 
 void AShooterPlayer::SetRandomActiveColor()
 {
-	int32 Selection = FMath::RandRange(0, ArrBallColors.Num() - 1);
-	ActiveColor = ArrBallColors[Selection];
+	TArray<FLinearColor> AvailableColors;
+	for (auto color : ArrBallColors)
+	{
+		if (color != ActiveColor)
+		{
+			AvailableColors.AddUnique(color);
+		}
+	}
+
+	int32 Selection = FMath::RandRange(0, AvailableColors.Num() - 1);
+	ActiveColor = AvailableColors[Selection];
+	AimOverlay->SetActiveColorText(ColorsMap[ActiveColor]);
+
+	GetWorldTimerManager().SetTimer(ColorTimer, this, &AShooterPlayer::SetRandomActiveColor, ActiveColorTime);
 }
 
 bool AShooterPlayer::GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection)

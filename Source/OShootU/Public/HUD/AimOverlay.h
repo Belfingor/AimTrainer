@@ -8,6 +8,7 @@
 
 class UImage;
 class UTextBlock;
+enum class EBallColors : uint8;
 /**
  * 
  */
@@ -20,6 +21,7 @@ public:
 	void SetCrosshairColor();
 	void SetHealthText(int32 Health);
 	void SetScoreCountText(int32 Score);
+	void SetActiveColorText(EBallColors Color);
 
 private:
 	UPROPERTY (meta = (BindWidget))
@@ -30,5 +32,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreCountText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ActiveColorText;
 
 };
