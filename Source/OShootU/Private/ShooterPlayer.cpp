@@ -13,6 +13,7 @@
 #include "HUD/AimOverlay.h"
 #include "Math/UnrealMathUtility.h"
 #include "ObjectTypes.h"
+#include "Menus/PauseMenu.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -69,6 +70,19 @@ void AShooterPlayer::Shoot(const FInputActionValue& Value)
 	Weapon->Shoot();
 }
 
+void AShooterPlayer::TogglePauseGame(const FInputActionValue& Value)
+{
+	APlayerController* PlayerController = GetPlayerController();
+	
+	PauseMenu = CreateWidget<UMenuBase>(PlayerController, PauseMenuClass);
+	PauseMenu->AddToViewport();
+	if (PauseMenu)
+	{
+		PauseMenu->Setup();
+		PauseMenu = nullptr; //Not sure yet if I want to set it to nullptr that early, but works good for now
+	}
+}
+
 void AShooterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -88,6 +102,7 @@ void AShooterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShooterPlayer::Look);
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &AShooterPlayer::Shoot);
+		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Triggered, this, &AShooterPlayer::TogglePauseGame);
 	}
 }
 

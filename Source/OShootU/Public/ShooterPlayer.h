@@ -15,6 +15,7 @@ class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class AWeapon;
 class UAimOverlay; 
+class UMenuBase;
 
 
 UCLASS()
@@ -39,15 +40,21 @@ protected:
 	TObjectPtr<UInputAction> LookAction;
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> ShootAction;
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> PauseMenuAction;
 	//-----------------------------CallBacks for Input-----------------------------
 	void Look(const FInputActionValue& Value);
 	void Shoot(const FInputActionValue& Value);
+	void TogglePauseGame(const FInputActionValue& Value);
 	//-----------------------------------------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeapon> Weapon;
 	UPROPERTY(EditAnywhere, Category = "Settings")
 	float MouseSensitivityModifier = 1.f;
 	float MouseSensitivityModifierRange;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UMenuBase> PauseMenuClass;
 
 private:
 	void InitOverlay();
@@ -72,6 +79,10 @@ private:
 	int32 PlayerScore = 0;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerHealth = 10;
+
+	
+	UPROPERTY()
+	TObjectPtr<UMenuBase> PauseMenu;
 
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
