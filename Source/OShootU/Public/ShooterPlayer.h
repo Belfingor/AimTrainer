@@ -26,6 +26,8 @@ public:
 	AShooterPlayer();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	int32 SetPlayerScore(int32 ScoreToAdd);
+	int32 ReducePLayerHealth(int32 HealthToDeduct);
 
 protected:
 	virtual void BeginPlay() override;
@@ -62,9 +64,14 @@ private:
 	TObjectPtr<UAimOverlay> AimOverlay;
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	FLinearColor ActiveColor;
-
 	FTimerHandle ColorTimer;
+	UPROPERTY(EditAnywhere, Category = "Weapon")
 	float ActiveColorTime = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	int32 PlayerScore = 0;
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	int32 PlayerHealth = 10;
 
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);

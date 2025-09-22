@@ -26,4 +26,9 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
+
+	FCollisionQueryParams LineTraceParams;
+
+	const int32 MissHealthPenalty = 1;
+
 };

@@ -17,6 +17,9 @@ AWeapon::AWeapon()
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	LineTraceParams.AddIgnoredActor(this);
+	LineTraceParams.AddIgnoredActor(GetOwner());
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -44,26 +47,23 @@ void AWeapon::Shoot()
 	FVector ForwardVector;
 	MyOwner->GetCrosshairTrace(StartLocation, ForwardVector);
 	FVector EndLocation = ForwardVector * 1000000.f;
-
 	FHitResult Hit;
-	FCollisionQueryParams Params;
 
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(MyOwner);
-
-	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, Params))
+	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, LineTraceParams))
 	{	
-		//Did hit something
-		//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, .5f);
-		DrawDebugPoint(GetWorld(), Hit.Location, 10.0f, FColor::Yellow, false, 3.0f);
-		
 		ABall* DamagedBall = Cast<ABall>(Hit.GetActor());
 		if (DamagedBall)
 		{
 			DamagedBall->TakeHit();
+			DrawDebugPoint(GetWorld(), Hit.Location, 10.0f, FColor::Yellow, false, 3.0f);
+		}
+		else
+		{
+			MyOwner->ReducePLayerHealth(MissHealthPenalty);
+			// Did hit something but not a Ball
 		}
 	}
-		else
+	else
 	{
 		//Did not hit anything
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .5f);

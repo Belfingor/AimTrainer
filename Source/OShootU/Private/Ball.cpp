@@ -41,10 +41,19 @@ void ABall::Tick(float DeltaTime)
 void ABall::TakeHit()
 {
 	AShooterPlayer* Player = GetShooterPlayer();
-	if (Player && Player->GetActiveColor() == GetBallColor())
+	if (Player)
 	{
-		RemoveBallFromWall();
+		if (Player->GetActiveColor() == GetBallColor())
+		{
+			RemoveBallFromWall();
+			Player->SetPlayerScore(BallScoreValue);
+		}
+		else
+		{
+			Player->ReducePLayerHealth(WrongBallHealthPenalty);
+		}
 	}
+	
 }
 
 void ABall::RemoveBallFromWall()

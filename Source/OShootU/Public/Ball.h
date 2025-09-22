@@ -31,7 +31,11 @@ private:
 
 	FLinearColor BallColor;
 
+	const int32 BallScoreValue = 1;
+	const int32 WrongBallHealthPenalty = 2;
+
 public: //Setters and Getters
 	void SetBallColor(FLinearColor Color);
 	FLinearColor GetBallColor() { return BallColor; }
+	int32 GetBallScoreValue() { return BallScoreValue; }
 };

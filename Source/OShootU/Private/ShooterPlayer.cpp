@@ -51,7 +51,6 @@ void AShooterPlayer::BeginPlay()
 		Weapon = DefaultWeapon;
 	}
 	InitOverlay();
-
 	SetRandomActiveColor();
 }
 
@@ -89,9 +88,21 @@ void AShooterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShooterPlayer::Look);
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &AShooterPlayer::Shoot);
-
 	}
+}
 
+int32 AShooterPlayer::SetPlayerScore(int32 ScoreToAdd)
+{
+	PlayerScore += ScoreToAdd;
+	AimOverlay->SetScoreCountText(PlayerScore);
+	return PlayerScore;
+}
+
+int32 AShooterPlayer::ReducePLayerHealth(int32 HealthToDeduct)
+{
+	PlayerHealth -= HealthToDeduct;
+	AimOverlay->SetHealthText(PlayerHealth);
+	return PlayerHealth;
 }
 
 void AShooterPlayer::InitOverlay()
@@ -104,7 +115,8 @@ void AShooterPlayer::InitOverlay()
 			AimOverlay = AimHUD->GetAimOverlay();
 			if (AimOverlay)
 			{
-				AimOverlay->SetHealthText(3);
+				AimOverlay->SetHealthText(PlayerHealth);
+				AimOverlay->SetScoreCountText(PlayerScore);
 			}
 		}
 	}
@@ -141,7 +153,6 @@ bool AShooterPlayer::GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWo
 		int32 ViewportSizeX;
 		int32 ViewportSizeY;
 		PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
-
 
 		FVector2D CrosshairScreenLocation(ViewportSizeX * 0.5f, ViewportSizeY * 0.5f);
 		PlayerController->DeprojectScreenPositionToWorld(CrosshairScreenLocation.X, CrosshairScreenLocation.Y, OutWorldLocation, OutWolrdDirection);

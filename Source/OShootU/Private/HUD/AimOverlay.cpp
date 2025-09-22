@@ -13,12 +13,12 @@ void UAimOverlay::SetCrosshairColor()
 
 void UAimOverlay::SetHealthText(int32 Health)
 {
-	//Will Set Text here
+	HealthText->SetText(FText::FromString(FString::FromInt(Health)));
 }
 
 void UAimOverlay::SetScoreCountText(int32 Score)
 {
-	//Will Set Text here
+	ScoreCountText->SetText(FText::FromString(FString::FromInt(Score)));
 }
 
 void UAimOverlay::SetActiveColorText(EBallColors Color)
@@ -27,12 +27,15 @@ void UAimOverlay::SetActiveColorText(EBallColors Color)
 	{
 	case EBallColors::EBC_Red:
 		ActiveColorText->SetText(FText::FromString("Red"));
+		ActiveColorText->SetColorAndOpacity(FLinearColor::Red);
 		break;
 	case EBallColors::EBC_Green: 
 		ActiveColorText->SetText(FText::FromString("Green"));
+		ActiveColorText->SetColorAndOpacity(FLinearColor::Green);
 		break;
 	case EBallColors::EBC_Blue:
 		ActiveColorText->SetText(FText::FromString("Blue"));
+		ActiveColorText->SetColorAndOpacity(FLinearColor::Blue);
 		break;
 
 	}
