@@ -17,6 +17,9 @@ class OSHOOTU_API UPauseMenu : public UMenuBase
 public:
 	virtual void Setup() override;
 	virtual void Teardown() override;
-	// TODO: Add return to main menu logic here. Function must be BPCallable
+	UFUNCTION(BlueprintCallable)
+	void MainMenuButtonPressed();
 
+private:
+	FName MainMenuMapName = TEXT("MainMenuMap");
 };

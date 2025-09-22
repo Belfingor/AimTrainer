@@ -2,4 +2,24 @@
 
 
 #include "Menus/MainMenu.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
+void UMainMenu::StartGameButtonPressed()
+{
+	Teardown();
+	UGameplayStatics::OpenLevel(GetWorld(), GameMapName);
+}
+
+void UMainMenu::ExitButtonPressed()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		APlayerController* PlayerController = World->GetFirstPlayerController();
+		if (PlayerController)
+		{
+			UKismetSystemLibrary::QuitGame(World, PlayerController, EQuitPreference::Quit, true);
+		}
+	}
+}

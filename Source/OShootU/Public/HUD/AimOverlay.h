@@ -8,6 +8,7 @@
 
 class UImage;
 class UTextBlock;
+class UProgressBar;
 enum class EBallColors : uint8;
 /**
  * 
@@ -22,6 +23,7 @@ public:
 	void SetHealthText(int32 Health);
 	void SetScoreCountText(int32 Score);
 	void SetActiveColorText(EBallColors Color);
+	void SetTimeBarPercent(float Percent);
 
 private:
 	UPROPERTY (meta = (BindWidget))
@@ -35,5 +37,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ActiveColorText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UProgressBar> TimeBarFiller;
 
 };

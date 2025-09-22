@@ -3,6 +3,7 @@
 
 #include "Menus/PauseMenu.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UPauseMenu::Setup()
 {
@@ -14,4 +15,10 @@ void UPauseMenu::Teardown()
 {
 	Super::Teardown();
 	UGameplayStatics::SetGamePaused(this, false);
+}
+
+void UPauseMenu::MainMenuButtonPressed()
+{
+	Teardown();
+	UGameplayStatics::OpenLevel(GetWorld(), MainMenuMapName);
 }

@@ -4,6 +4,7 @@
 #include "HUD/AimOverlay.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
 #include "ObjectTypes.h"
 
 void UAimOverlay::SetCrosshairColor()
@@ -39,4 +40,9 @@ void UAimOverlay::SetActiveColorText(EBallColors Color)
 		break;
 
 	}
+}
+
+void UAimOverlay::SetTimeBarPercent(float Percent)
+{
+	TimeBarFiller->SetPercent(Percent);
 }

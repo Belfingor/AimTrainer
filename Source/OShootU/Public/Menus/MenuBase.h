@@ -14,6 +14,7 @@ class OSHOOTU_API UMenuBase : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
 	virtual void Setup();
 	UFUNCTION(BlueprintCallable)
 	virtual void Teardown();

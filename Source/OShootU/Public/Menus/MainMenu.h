@@ -13,5 +13,13 @@ UCLASS()
 class OSHOOTU_API UMainMenu : public UMenuBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void StartGameButtonPressed();
+	UFUNCTION(BlueprintCallable)
+	void ExitButtonPressed();
+
+private:
+	FName GameMapName = TEXT("PlayingMap");
 };

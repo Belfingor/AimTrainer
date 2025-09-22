@@ -26,6 +26,7 @@ class OSHOOTU_API AShooterPlayer : public APawn
 public:
 	AShooterPlayer();
 	virtual void Tick(float DeltaTime) override;
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	int32 SetPlayerScore(int32 ScoreToAdd);
 	int32 ReducePLayerHealth(int32 HealthToDeduct);
@@ -60,6 +61,7 @@ private:
 	void InitOverlay();
 	APlayerController* GetPlayerController();
 	void SetRandomActiveColor();
+	void UpdateTimerBar();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;
