@@ -4,7 +4,7 @@
 #include "Menus/MenuBase.h"
 #include "GameFramework/PlayerController.h"
 
-void UMenuBase::Setup()
+void UMenuBase::Setup(bool ShowMouseCursor)
 {
 	UWorld* World = GetWorld();
 	if (!World) return;
@@ -16,7 +16,7 @@ void UMenuBase::Setup()
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = true;
+	PlayerController->bShowMouseCursor = ShowMouseCursor;
 }
 
 void UMenuBase::Teardown()

@@ -3,11 +3,10 @@
 
 #include "Menus/PauseMenu.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 
-void UPauseMenu::Setup()
+void UPauseMenu::Setup(bool ShowMouseCursor)
 {
-	Super::Setup();
+	Super::Setup(ShowMouseCursor);
 	UGameplayStatics::SetGamePaused(this, true);
 }
 

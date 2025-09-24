@@ -16,6 +16,9 @@ class USkeletalMeshComponent;
 class AWeapon;
 class UAimOverlay; 
 class UMenuBase;
+class UPauseMenu;
+class UGameOverMenu;
+class UGameStartCountdownMenu;
 
 
 UCLASS()
@@ -26,7 +29,6 @@ class OSHOOTU_API AShooterPlayer : public APawn
 public:
 	AShooterPlayer();
 	virtual void Tick(float DeltaTime) override;
-	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	int32 SetPlayerScore(int32 ScoreToAdd);
 	int32 ReducePLayerHealth(int32 HealthToDeduct);
@@ -56,12 +58,18 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UMenuBase> PauseMenuClass;
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UMenuBase> GameOverMenuClass;
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UMenuBase> CountdownMenuClass;
 
 private:
 	void InitOverlay();
 	APlayerController* GetPlayerController();
 	void SetRandomActiveColor();
 	void UpdateTimerBar();
+	void InitGameOverMenu();
+	void InitStartGameCountdownMenu();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;
@@ -76,15 +84,17 @@ private:
 	FTimerHandle ColorTimer;
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	float ActiveColorTime = 5.f;
-
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerScore = 0;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerHealth = 10;
 
-	
 	UPROPERTY()
-	TObjectPtr<UMenuBase> PauseMenu;
+	TObjectPtr<UPauseMenu> PauseMenu;
+	UPROPERTY()
+	TObjectPtr<UGameOverMenu> GameOverMenu;
+	UPROPERTY()
+	TObjectPtr<UGameStartCountdownMenu> CountdownMenu;
 
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);

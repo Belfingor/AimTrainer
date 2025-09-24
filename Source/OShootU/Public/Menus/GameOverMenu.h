@@ -4,17 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Menus/MenuBase.h"
-#include "PauseMenu.generated.h"
+#include "GameOverMenu.generated.h"
 
-class UButton;
+class UTextBlock;
 
 UCLASS()
-class OSHOOTU_API UPauseMenu : public UMenuBase
+class OSHOOTU_API UGameOverMenu : public UMenuBase
 {
 	GENERATED_BODY()
+
 public:
 	virtual void Setup(bool ShowMouseCursor) override;
+	void Setup(int32 Score);
 	virtual void Teardown() override;
 	UFUNCTION(BlueprintCallable)
 	void MainMenuButtonPressed();
+	UFUNCTION(BlueprintCallable)
+	void RestartButtonPressed();
+
+private:
+	void SetPlayerScoreString(int32 Score);
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ScoreText;
 };

@@ -15,8 +15,11 @@ class OSHOOTU_API UMenuBase : public UUserWidget
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	virtual void Setup();
+	virtual void Setup(bool ShowMouseCursor);
 	UFUNCTION(BlueprintCallable)
 	virtual void Teardown();
-	
+
+protected:
+	FName MainMenuMapName = TEXT("MainMenuMap");
+	FName PlayingMapName = TEXT("PlayingMap");
 };

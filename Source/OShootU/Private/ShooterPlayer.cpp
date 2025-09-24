@@ -14,6 +14,8 @@
 #include "Math/UnrealMathUtility.h"
 #include "ObjectTypes.h"
 #include "Menus/PauseMenu.h"
+#include "Menus/GameOverMenu.h"
+#include "Menus/GameStartCountdownMenu.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -53,6 +55,8 @@ void AShooterPlayer::BeginPlay()
 	}
 	InitOverlay();
 	SetRandomActiveColor();
+	//Decided to init countdown after first tick as player's camera was not initialized properly otherwise
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
 }
 
 void AShooterPlayer::Look(const FInputActionValue& Value)
@@ -73,12 +77,13 @@ void AShooterPlayer::Shoot(const FInputActionValue& Value)
 void AShooterPlayer::TogglePauseGame(const FInputActionValue& Value)
 {
 	APlayerController* PlayerController = GetPlayerController();
+	if (!PlayerController) return;
 	
-	PauseMenu = CreateWidget<UMenuBase>(PlayerController, PauseMenuClass);
+	PauseMenu = CreateWidget<UPauseMenu>(PlayerController, PauseMenuClass);
 	PauseMenu->AddToViewport();
 	if (PauseMenu)
 	{
-		PauseMenu->Setup();
+		PauseMenu->Setup(true);
 		PauseMenu = nullptr; //Not sure yet if I want to set it to nullptr that early, but works good for now
 	}
 }
@@ -113,6 +118,10 @@ int32 AShooterPlayer::ReducePLayerHealth(int32 HealthToDeduct)
 {
 	PlayerHealth -= HealthToDeduct;
 	AimOverlay->SetHealthText(PlayerHealth);
+	if (PlayerHealth <= 0)
+	{
+		InitGameOverMenu();
+	}
 	return PlayerHealth;
 }
 
@@ -167,6 +176,32 @@ void AShooterPlayer::UpdateTimerBar()
 	if (AimOverlay)
 	{
 		AimOverlay->SetTimeBarPercent(TimePercent);
+	}
+}
+
+void AShooterPlayer::InitGameOverMenu()
+{
+	APlayerController* PlayerController = GetPlayerController();
+	if (!PlayerController) return;
+
+	GameOverMenu = CreateWidget<UGameOverMenu>(PlayerController, GameOverMenuClass);
+	GameOverMenu->AddToViewport();
+	if (GameOverMenu)
+	{
+		GameOverMenu->Setup(PlayerScore);
+	}
+}
+
+void AShooterPlayer::InitStartGameCountdownMenu()
+{
+	APlayerController* PlayerController = GetPlayerController();
+	if (!PlayerController) return;
+
+	CountdownMenu = CreateWidget<UGameStartCountdownMenu>(PlayerController, CountdownMenuClass);
+	CountdownMenu->AddToViewport();
+	if (CountdownMenu)
+	{
+		CountdownMenu->Setup(false);
 	}
 }
 
