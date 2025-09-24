@@ -29,6 +29,4 @@ private:
 
 	FCollisionQueryParams LineTraceParams;
 
-	const int32 MissHealthPenalty = 1;
-
 };

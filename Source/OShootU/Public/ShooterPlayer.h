@@ -30,8 +30,9 @@ public:
 	AShooterPlayer();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	int32 SetPlayerScore(int32 ScoreToAdd);
-	int32 ReducePLayerHealth(int32 HealthToDeduct);
+	int32 AddToPlayerScore(int32 ScoreToAdd);
+	int32 AdjustPlayerHealth(int32 Amount);
+	void ReduceActiveColorTimer();
 
 protected:
 	virtual void BeginPlay() override;
@@ -83,11 +84,17 @@ private:
 	FLinearColor ActiveColor;
 	FTimerHandle ColorTimer;
 	UPROPERTY(EditAnywhere, Category = "Weapon")
-	float ActiveColorTime = 5.f;
+	float ActiveColorTime = 10.f;
+	const float TimerReduceValue = 0.2f;
+	const int32 ClearWallScore = 5;
+	const int32 ClearWallHealthRegen = 3;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerScore = 0;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerHealth = 10;
+	const int32 PlayerMaxHealth = 10;
+	const int32 ExpiredTimerHealthPenalty = 2;
+	bool bPassedInitialTimer = false;
 
 	UPROPERTY()
 	TObjectPtr<UPauseMenu> PauseMenu;
@@ -97,6 +104,8 @@ private:
 	TObjectPtr<UGameStartCountdownMenu> CountdownMenu;
 
 public:
+	int32 GetClearWallScore() { return ClearWallScore; }
+	int32 GetClearWallHealthRegen() { return ClearWallHealthRegen; }
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 	FLinearColor GetActiveColor() { return ActiveColor; }
 };

@@ -59,7 +59,6 @@ void AWeapon::Shoot()
 		}
 		else
 		{
-			MyOwner->ReducePLayerHealth(MissHealthPenalty);
 			// Did hit something but not a Ball
 		}
 	}

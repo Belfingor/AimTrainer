@@ -30,8 +30,6 @@ void AWall::Tick(float DeltaTime)
 		int32 BallsLeft = BallsOnWall.Num();
 		GEngine->AddOnScreenDebugMessage( 1, 5.0f, FColor::Red, FString::Printf(TEXT("Balls Left: %d"), BallsLeft));
 	}
-
-	//CheckIfNeedResetBalls();
 }
 
 void AWall::CheckIfNeedResetBalls()
@@ -115,6 +113,11 @@ AShooterPlayer* AWall::GetShooterPlayer()
 
 void AWall::ResettAllBallsOnWall()
 {
+	if (AShooterPlayer* Player = GetShooterPlayer())
+	{
+		Player->AddToPlayerScore(Player->GetClearWallScore());
+		Player->AdjustPlayerHealth(Player->GetClearWallHealthRegen());
+	}
 	for (auto Ball : BallsOnWall)
 	{
 		Ball->Destroy();

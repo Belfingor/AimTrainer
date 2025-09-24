@@ -46,11 +46,11 @@ void ABall::TakeHit()
 		if (Player->GetActiveColor() == GetBallColor())
 		{
 			RemoveBallFromWall();
-			Player->SetPlayerScore(BallScoreValue);
+			Player->AddToPlayerScore(BallScoreValue);
 		}
 		else
 		{
-			Player->ReducePLayerHealth(WrongBallHealthPenalty);
+			Player->AdjustPlayerHealth(-WrongBallHealthPenalty);
 		}
 	}
 	

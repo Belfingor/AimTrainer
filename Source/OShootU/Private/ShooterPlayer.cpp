@@ -55,6 +55,7 @@ void AShooterPlayer::BeginPlay()
 	}
 	InitOverlay();
 	SetRandomActiveColor();
+	bPassedInitialTimer = true; // Avoid deducting Health on first timer set
 	//Decided to init countdown after first tick as player's camera was not initialized properly otherwise
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
 }
@@ -107,22 +108,28 @@ void AShooterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
-int32 AShooterPlayer::SetPlayerScore(int32 ScoreToAdd)
+int32 AShooterPlayer::AddToPlayerScore(int32 ScoreToAdd)
 {
 	PlayerScore += ScoreToAdd;
 	AimOverlay->SetScoreCountText(PlayerScore);
 	return PlayerScore;
 }
 
-int32 AShooterPlayer::ReducePLayerHealth(int32 HealthToDeduct)
+int32 AShooterPlayer::AdjustPlayerHealth(int32 Amount)
 {
-	PlayerHealth -= HealthToDeduct;
+	int32 NewHealth = PlayerHealth + Amount;
+	PlayerHealth = FMath::Clamp(NewHealth, 0, PlayerMaxHealth);
 	AimOverlay->SetHealthText(PlayerHealth);
 	if (PlayerHealth <= 0)
 	{
 		InitGameOverMenu();
 	}
 	return PlayerHealth;
+}
+
+void AShooterPlayer::ReduceActiveColorTimer() 
+{ 
+	ActiveColorTime -= TimerReduceValue; 
 }
 
 void AShooterPlayer::InitOverlay()
@@ -164,6 +171,12 @@ void AShooterPlayer::SetRandomActiveColor()
 	if (AimOverlay)
 	{
 		AimOverlay->SetActiveColorText(ColorsMap[ActiveColor]);
+	}
+
+	if (bPassedInitialTimer)
+	{
+		AdjustPlayerHealth(-ExpiredTimerHealthPenalty);
+		ReduceActiveColorTimer();
 	}
 	
 	GetWorldTimerManager().SetTimer(ColorTimer, this, &AShooterPlayer::SetRandomActiveColor, ActiveColorTime);
