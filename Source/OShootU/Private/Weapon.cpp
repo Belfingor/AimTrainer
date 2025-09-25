@@ -5,6 +5,12 @@
 #include "Components/StaticMeshComponent.h"
 #include "ShooterPlayer.h"
 #include "Ball.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
+//#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
+
 
 AWeapon::AWeapon()
 {
@@ -20,6 +26,28 @@ void AWeapon::BeginPlay()
 
 	LineTraceParams.AddIgnoredActor(this);
 	LineTraceParams.AddIgnoredActor(GetOwner());
+}
+
+void AWeapon::PlayShootSound()
+{
+	if (!ShootSound) return;
+	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation());
+}
+
+void AWeapon::SpawnMuzzleFlashEffect()
+{
+	if (MuzzleFlashNiagaraSystem && WeaponMesh)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			MuzzleFlashNiagaraSystem,
+			WeaponMesh, 
+			"MuzzleFlashSocket",
+			FVector::Zero(),
+			FRotator::ZeroRotator, 
+			EAttachLocation::SnapToTarget, 
+			true
+		);
+	}
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -48,7 +76,9 @@ void AWeapon::Shoot()
 	MyOwner->GetCrosshairTrace(StartLocation, ForwardVector);
 	FVector EndLocation = ForwardVector * 1000000.f;
 	FHitResult Hit;
-
+	PlayShootSound();
+	SpawnMuzzleFlashEffect();
+	
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, LineTraceParams))
 	{	
 		ABall* DamagedBall = Cast<ABall>(Hit.GetActor());

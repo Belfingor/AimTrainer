@@ -6,7 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
+
 class UStaticMeshComponent;
+class USoundBase;
+class UNiagaraSystem;
+
 
 UCLASS()
 class OSHOOTU_API AWeapon : public AActor
@@ -23,9 +27,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	
 private:
+	void PlayShootSound();
+	void SpawnMuzzleFlashEffect();
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<USoundBase> ShootSound;
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	TObjectPtr<UNiagaraSystem> MuzzleFlashNiagaraSystem;
 
 	FCollisionQueryParams LineTraceParams;
 

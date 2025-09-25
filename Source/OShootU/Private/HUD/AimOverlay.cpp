@@ -14,12 +14,18 @@ void UAimOverlay::SetCrosshairColor()
 
 void UAimOverlay::SetHealthText(int32 Health)
 {
-	HealthText->SetText(FText::FromString(FString::FromInt(Health)));
+	if (HealthText)
+	{
+		HealthText->SetText(FText::FromString(FString::FromInt(Health)));
+	}
 }
 
 void UAimOverlay::SetScoreCountText(int32 Score)
 {
-	ScoreCountText->SetText(FText::FromString(FString::FromInt(Score)));
+	if (ScoreCountText)
+	{
+		ScoreCountText->SetText(FText::FromString(FString::FromInt(Score)));
+	}
 }
 
 void UAimOverlay::SetActiveColorText(EBallColors Color)
@@ -44,5 +50,8 @@ void UAimOverlay::SetActiveColorText(EBallColors Color)
 
 void UAimOverlay::SetTimeBarPercent(float Percent)
 {
-	TimeBarFiller->SetPercent(Percent);
+	if (TimeBarFiller)
+	{
+		TimeBarFiller->SetPercent(Percent);
+	}
 }
