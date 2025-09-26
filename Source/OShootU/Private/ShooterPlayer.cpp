@@ -119,7 +119,10 @@ int32 AShooterPlayer::AdjustPlayerHealth(int32 Amount)
 {
 	int32 NewHealth = PlayerHealth + Amount;
 	PlayerHealth = FMath::Clamp(NewHealth, 0, PlayerMaxHealth);
-	AimOverlay->SetHealthText(PlayerHealth);
+	if (AimOverlay)
+	{
+		AimOverlay->SetHealthText(PlayerHealth);
+	}
 	if (PlayerHealth <= 0)
 	{
 		InitGameOverMenu();

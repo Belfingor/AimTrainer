@@ -6,8 +6,6 @@
 #include "Menus/MenuBase.h"
 #include "PauseMenu.generated.h"
 
-class UButton;
-
 UCLASS()
 class OSHOOTU_API UPauseMenu : public UMenuBase
 {
