@@ -6,8 +6,10 @@
 #include "Menus/MenuBase.h"
 #include "MainMenu.generated.h"
 
+class UOShootUUserSettings;
 class UWidgetSwitcher;
 class UBorder;
+class USlider;
 
 UCLASS()
 class OSHOOTU_API UMainMenu : public UMenuBase
@@ -24,7 +26,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReturnButtonPressed();
 
+	//----------------------------------Settings-----------------------------------
+	UFUNCTION(BlueprintCallable)
+	float ApplySentitivitySettings();
+
 private:
+	TObjectPtr<UOShootUUserSettings> GetGameUserSettings() const;
+
 	FName GameMapName = TEXT("PlayingMap");
 
 	const int32 MainMenuWidgetIndex = 0;
@@ -35,5 +43,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UBorder> MainMenu;
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UBorder> Settings;
+	TObjectPtr<UBorder> SettingsMenu;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> SensitivitySlider;
 };

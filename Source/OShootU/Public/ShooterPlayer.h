@@ -19,6 +19,7 @@ class UMenuBase;
 class UPauseMenu;
 class UGameOverMenu;
 class UGameStartCountdownMenu;
+class UOShootUUserSettings;
 
 
 UCLASS()
@@ -53,7 +54,6 @@ protected:
 	//-----------------------------------------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeapon> Weapon;
-	UPROPERTY(EditAnywhere, Category = "Settings")
 	float MouseSensitivityModifier = 1.f;
 	float MouseSensitivityModifierRange;
 
@@ -71,6 +71,8 @@ private:
 	void UpdateTimerBar();
 	void InitGameOverMenu();
 	void InitStartGameCountdownMenu();
+	TObjectPtr<UOShootUUserSettings> GetGameUserSettings() const;
+	void ApplySensitivitySettingsToPlayer();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;

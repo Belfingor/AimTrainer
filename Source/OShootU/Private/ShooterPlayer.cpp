@@ -16,6 +16,7 @@
 #include "Menus/PauseMenu.h"
 #include "Menus/GameOverMenu.h"
 #include "Menus/GameStartCountdownMenu.h"
+#include "Settings/OShootUUserSettings.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -57,6 +58,7 @@ void AShooterPlayer::BeginPlay()
 	SetRandomActiveColor();
 	bPassedInitialTimer = true; // Avoid deducting Health on first timer set
 	//Decided to init countdown after first tick as player's camera was not initialized properly otherwise
+	ApplySensitivitySettingsToPlayer();
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
 }
 
@@ -218,6 +220,17 @@ void AShooterPlayer::InitStartGameCountdownMenu()
 	if (CountdownMenu)
 	{
 		CountdownMenu->Setup(false);
+	}
+}
+
+TObjectPtr<UOShootUUserSettings> AShooterPlayer::GetGameUserSettings() const { return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); }
+
+void AShooterPlayer::ApplySensitivitySettingsToPlayer()
+{
+	UOShootUUserSettings* Settings = GetGameUserSettings();
+	if (Settings)
+	{
+		MouseSensitivityModifier = Settings->GetMouseSensitivity();
 	}
 }
 
