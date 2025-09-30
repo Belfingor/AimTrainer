@@ -7,9 +7,9 @@
 #include "Ball.h"
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
-//#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Settings/OShootUUserSettings.h"
 
 
 AWeapon::AWeapon()
@@ -18,6 +18,8 @@ AWeapon::AWeapon()
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
 	WeaponMesh->SetupAttachment(GetRootComponent());
+
+	Settings = GetUserSettings();
 }
 
 void AWeapon::BeginPlay()
@@ -30,8 +32,8 @@ void AWeapon::BeginPlay()
 
 void AWeapon::PlayShootSound()
 {
-	if (!ShootSound) return;
-	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation());
+	if (!ShootSound || !Settings) return;
+	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation(), Settings->GetMasterVolume());
 }
 
 void AWeapon::SpawnMuzzleFlashEffect()
@@ -48,6 +50,11 @@ void AWeapon::SpawnMuzzleFlashEffect()
 			true
 		);
 	}
+}
+
+TObjectPtr<UOShootUUserSettings> AWeapon::GetUserSettings() const
+{
+	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings());
 }
 
 void AWeapon::Tick(float DeltaTime)

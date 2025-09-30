@@ -18,13 +18,17 @@ public:
 	float MouseSensitivity = 0.5f;
 	UPROPERTY(Config)
 	int32 FPSCap = 60;
+	UPROPERTY(Config)
+	float MasterVolume = 0.5f;
 
 	//----------------------------------Setters------------------------------------
 	void SetMouseSensitivity(float NewSensitivity);
 	void SetFPSCap(int32 NewFPS);
+	void SetMasterVolume(float Volume);
 	
 	//----------------------------------Getters------------------------------------
 	float GetMouseSensitivity() { return MouseSensitivity; }
 	int32 GetFPSCap() { return FPSCap; }
+	float GetMasterVolume() { return MasterVolume; }
 	
 };

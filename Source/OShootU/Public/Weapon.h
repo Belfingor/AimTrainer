@@ -10,6 +10,7 @@
 class UStaticMeshComponent;
 class USoundBase;
 class UNiagaraSystem;
+class UOShootUUserSettings;
 
 
 UCLASS()
@@ -31,6 +32,7 @@ protected:
 private:
 	void PlayShootSound();
 	void SpawnMuzzleFlashEffect();
+	TObjectPtr<UOShootUUserSettings> GetUserSettings() const;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
@@ -38,6 +40,8 @@ private:
 	TObjectPtr<USoundBase> ShootSound;
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<UNiagaraSystem> MuzzleFlashNiagaraSystem;
+
+	TObjectPtr<UOShootUUserSettings> Settings;
 
 	FCollisionQueryParams LineTraceParams;
 

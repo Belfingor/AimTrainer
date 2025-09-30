@@ -223,7 +223,10 @@ void AShooterPlayer::InitStartGameCountdownMenu()
 	}
 }
 
-TObjectPtr<UOShootUUserSettings> AShooterPlayer::GetGameUserSettings() const { return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); }
+TObjectPtr<UOShootUUserSettings> AShooterPlayer::GetGameUserSettings() const 
+{ 
+	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); 
+}
 
 void AShooterPlayer::ApplySensitivitySettingsToPlayer()
 {

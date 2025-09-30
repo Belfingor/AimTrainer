@@ -7,6 +7,28 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/Slider.h"
 #include "Settings/OShootUUserSettings.h"
+#include "Components/ComboBoxString.h"
+
+void UMainMenu::Setup(bool ShowMouseCursor)
+{
+	Super::Setup(ShowMouseCursor);
+	Settings = GetGameUserSettings();
+	if (Settings)
+	{
+		if (SensitivitySlider)
+		{
+			SensitivitySlider->SetValue(Settings->GetMouseSensitivity());
+		}
+		if (FPSDropDown)
+		{
+			FPSDropDown->SetSelectedOption(FString::FromInt(Settings->GetFPSCap()));
+		}
+		if (VolumeSlider)
+		{
+			VolumeSlider->SetValue(Settings->GetMasterVolume());
+		}
+	}
+}
 
 void UMainMenu::StartGameButtonPressed()
 {
@@ -45,8 +67,7 @@ void UMainMenu::ReturnButtonPressed()
 
 float UMainMenu::ApplySentitivitySettings()
 {
-	TObjectPtr<UOShootUUserSettings> Settings = GetGameUserSettings();
-	if (Settings)
+	if (Settings && SensitivitySlider)
 	{
 		Settings->SetMouseSensitivity(SensitivitySlider->GetValue());
 		return Settings->GetMouseSensitivity();
@@ -54,4 +75,23 @@ float UMainMenu::ApplySentitivitySettings()
 	return 0.f;
 }
 
-TObjectPtr<UOShootUUserSettings> UMainMenu::GetGameUserSettings() const { return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); }
+void UMainMenu::ApplyFPSChangeSettings(FString DropDownSelection)
+{
+	int32 FPSToSet = FCString::Atoi(*DropDownSelection);
+	Settings->SetFPSCap(FPSToSet);
+}
+
+float UMainMenu::ApplyMasterVolume()
+{
+	if (Settings && VolumeSlider)
+	{
+		Settings->SetMasterVolume(VolumeSlider->GetValue());
+		return Settings->GetMasterVolume();
+	}
+	return 0.f;
+}
+
+TObjectPtr<UOShootUUserSettings> UMainMenu::GetGameUserSettings() const 
+{ 
+	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); 
+}

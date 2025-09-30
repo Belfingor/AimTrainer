@@ -10,6 +10,7 @@ class UOShootUUserSettings;
 class UWidgetSwitcher;
 class UBorder;
 class USlider;
+class UComboBoxString;
 
 UCLASS()
 class OSHOOTU_API UMainMenu : public UMenuBase
@@ -17,6 +18,7 @@ class OSHOOTU_API UMainMenu : public UMenuBase
 	GENERATED_BODY()
 
 public:
+	virtual void Setup(bool ShowMouseCursor) override;
 	UFUNCTION(BlueprintCallable)
 	void StartGameButtonPressed();
 	UFUNCTION(BlueprintCallable)
@@ -29,9 +31,14 @@ public:
 	//----------------------------------Settings-----------------------------------
 	UFUNCTION(BlueprintCallable)
 	float ApplySentitivitySettings();
+	UFUNCTION(BlueprintCallable)
+	void ApplyFPSChangeSettings(FString DropDownSelection);
+	UFUNCTION(BlueprintCallable)
+	float ApplyMasterVolume();
 
 private:
 	TObjectPtr<UOShootUUserSettings> GetGameUserSettings() const;
+	TObjectPtr<UOShootUUserSettings> Settings;
 
 	FName GameMapName = TEXT("PlayingMap");
 
@@ -46,4 +53,8 @@ private:
 	TObjectPtr<UBorder> SettingsMenu;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USlider> SensitivitySlider;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> VolumeSlider;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UComboBoxString> FPSDropDown;
 };
