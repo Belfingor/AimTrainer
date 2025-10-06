@@ -35,62 +35,6 @@ AShooterPlayer::AShooterPlayer()
 	MouseSensitivityModifierRange = FMath::Clamp(MouseSensitivityModifier, 0.1f, 1.f);
 }
 
-void AShooterPlayer::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(PlayerMappingContext, 0);
-		}
-	}
-
-	UWorld* World = GetWorld();
-	if (World && WeaponClass)
-	{
-		AWeapon* DefaultWeapon = World->SpawnActor<AWeapon>(WeaponClass);
-		DefaultWeapon->Equip(SkeletalMesh, FName("WeaponSocket"), this);
-		Weapon = DefaultWeapon;
-	}
-	InitOverlay();
-	SetRandomActiveColor();
-	bPassedInitialTimer = true; // Avoid deducting Health on first timer set
-	//Decided to init countdown after first tick as player's camera was not initialized properly otherwise
-	ApplySensitivitySettingsToPlayer();
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
-}
-
-void AShooterPlayer::Look(const FInputActionValue& Value)
-{
-	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (GetController())
-	{
-		AddControllerYawInput(LookAxisValue.X * MouseSensitivityModifier);
-		AddControllerPitchInput(-LookAxisValue.Y * MouseSensitivityModifier);
-	}
-}
-
-void AShooterPlayer::Shoot(const FInputActionValue& Value)
-{
-	Weapon->Shoot();
-}
-
-void AShooterPlayer::TogglePauseGame(const FInputActionValue& Value)
-{
-	APlayerController* PlayerController = GetPlayerController();
-	if (!PlayerController) return;
-	
-	PauseMenu = CreateWidget<UPauseMenu>(PlayerController, PauseMenuClass);
-	PauseMenu->AddToViewport();
-	if (PauseMenu)
-	{
-		PauseMenu->Setup(true);
-		PauseMenu = nullptr; //Not sure yet if I want to set it to nullptr that early, but works good for now
-	}
-}
-
 void AShooterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -132,9 +76,69 @@ int32 AShooterPlayer::AdjustPlayerHealth(int32 Amount)
 	return PlayerHealth;
 }
 
-void AShooterPlayer::ReduceActiveColorTimer() 
-{ 
-	ActiveColorTime -= TimerReduceValue; 
+void AShooterPlayer::ReduceActiveColorTimer()
+{
+	ActiveColorTime -= TimerReduceValue;
+}
+
+void AShooterPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(PlayerMappingContext, 0);
+		}
+	}
+
+	InitWeapon();
+	InitOverlay();
+	SetRandomActiveColor();
+	bPassedInitialTimer = true; // Avoid deducting Health on first timer set
+	ApplySensitivitySettingsToPlayer();
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
+}
+
+void AShooterPlayer::Look(const FInputActionValue& Value)
+{
+	const FVector2D LookAxisValue = Value.Get<FVector2D>();
+	if (GetController())
+	{
+		AddControllerYawInput(LookAxisValue.X * MouseSensitivityModifier);
+		AddControllerPitchInput(-LookAxisValue.Y * MouseSensitivityModifier);
+	}
+}
+
+void AShooterPlayer::Shoot(const FInputActionValue& Value)
+{
+	Weapon->Shoot();
+}
+
+void AShooterPlayer::TogglePauseGame(const FInputActionValue& Value)
+{
+	APlayerController* PlayerController = GetPlayerController();
+	if (!PlayerController) return;
+	
+	PauseMenu = CreateWidget<UPauseMenu>(PlayerController, PauseMenuClass);
+	PauseMenu->AddToViewport();
+	if (PauseMenu)
+	{
+		PauseMenu->Setup(true);
+		PauseMenu = nullptr; //Not sure yet if I want to set it to nullptr that early, but works good for now
+	}
+}
+
+APlayerController* AShooterPlayer::GetPlayerController()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	return PlayerController;
+}
+
+TObjectPtr<UOShootUUserSettings> AShooterPlayer::GetGameUserSettings() const
+{
+	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings());
 }
 
 void AShooterPlayer::InitOverlay()
@@ -154,10 +158,15 @@ void AShooterPlayer::InitOverlay()
 	}
 }
 
-APlayerController* AShooterPlayer::GetPlayerController()
+void AShooterPlayer::InitWeapon()
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	return PlayerController;
+	UWorld* World = GetWorld();
+	if (World && WeaponClass)
+	{
+		AWeapon* DefaultWeapon = World->SpawnActor<AWeapon>(WeaponClass);
+		DefaultWeapon->Equip(SkeletalMesh, FName("WeaponSocket"), this);
+		Weapon = DefaultWeapon;
+	}
 }
 
 void AShooterPlayer::SetRandomActiveColor()
@@ -221,11 +230,6 @@ void AShooterPlayer::InitStartGameCountdownMenu()
 	{
 		CountdownMenu->Setup(false);
 	}
-}
-
-TObjectPtr<UOShootUUserSettings> AShooterPlayer::GetGameUserSettings() const 
-{ 
-	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings()); 
 }
 
 void AShooterPlayer::ApplySensitivitySettingsToPlayer()

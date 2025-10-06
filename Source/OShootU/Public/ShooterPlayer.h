@@ -65,13 +65,14 @@ protected:
 	TSubclassOf<UMenuBase> CountdownMenuClass;
 
 private:
-	void InitOverlay();
 	APlayerController* GetPlayerController();
+	TObjectPtr<UOShootUUserSettings> GetGameUserSettings() const;
+	void InitOverlay();
+	void InitWeapon();
 	void SetRandomActiveColor();
 	void UpdateTimerBar();
 	void InitGameOverMenu();
 	void InitStartGameCountdownMenu();
-	TObjectPtr<UOShootUUserSettings> GetGameUserSettings() const;
 	void ApplySensitivitySettingsToPlayer();
 
 	UPROPERTY(VisibleAnywhere)
@@ -106,8 +107,8 @@ private:
 	TObjectPtr<UGameStartCountdownMenu> CountdownMenu;
 
 public:
+	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 	int32 GetClearWallScore() { return ClearWallScore; }
 	int32 GetClearWallHealthRegen() { return ClearWallHealthRegen; }
-	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 	FLinearColor GetActiveColor() { return ActiveColor; }
 };

@@ -18,16 +18,38 @@ AWeapon::AWeapon()
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
 	WeaponMesh->SetupAttachment(GetRootComponent());
+}
 
-	Settings = GetUserSettings();
+void AWeapon::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner)
+{
+	SetOwner(NewOwner);
+	AttachMeshToSocket(InParent, InSocketName);
+}
+
+void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	WeaponMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
+void AWeapon::Shoot()
+{
+	CalculateLineTrace();
+	PlayShootSound();
+	SpawnMuzzleFlashEffect();
 }
 
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	LineTraceParams.AddIgnoredActor(this);
-	LineTraceParams.AddIgnoredActor(GetOwner());
+	InitIgnoredActors();
+	Settings = GetUserSettings();
 }
 
 void AWeapon::PlayShootSound()
@@ -52,47 +74,34 @@ void AWeapon::SpawnMuzzleFlashEffect()
 	}
 }
 
+void AWeapon::InitIgnoredActors()
+{
+	ActorsToIgnore.Add(this);
+	ActorsToIgnore.Add(GetOwner());
+	LineTraceParams.AddIgnoredActors(ActorsToIgnore);
+}
+
 TObjectPtr<UOShootUUserSettings> AWeapon::GetUserSettings() const
 {
 	return Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings());
 }
 
-void AWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner)
-{
-	SetOwner(NewOwner);
-	AttachMeshToSocket(InParent, InSocketName);
-}
-
-void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
-{
-	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	WeaponMesh->AttachToComponent(InParent, TransformRules, InSocketName);
-}
-
-void AWeapon::Shoot()
+void AWeapon::CalculateLineTrace()
 {
 	AShooterPlayer* MyOwner = Cast<AShooterPlayer>(GetOwner());
 	if (!MyOwner) return;
 	FVector StartLocation;
 	FVector ForwardVector;
 	MyOwner->GetCrosshairTrace(StartLocation, ForwardVector);
-	FVector EndLocation = ForwardVector * 1000000.f;
+	FVector EndLocation = ForwardVector * LineTraceForwardVectorLength;
 	FHitResult Hit;
-	PlayShootSound();
-	SpawnMuzzleFlashEffect();
-	
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, LineTraceParams))
-	{	
+	{
 		ABall* DamagedBall = Cast<ABall>(Hit.GetActor());
 		if (DamagedBall)
 		{
 			DamagedBall->TakeHit();
-			DrawDebugPoint(GetWorld(), Hit.Location, 10.0f, FColor::Yellow, false, 3.0f);
+			//DrawDebugPoint(GetWorld(), Hit.Location, 10.0f, FColor::Yellow, false, 3.0f);
 		}
 		else
 		{
@@ -102,7 +111,7 @@ void AWeapon::Shoot()
 	else
 	{
 		//Did not hit anything
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .5f);
+		//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 1.0f, 0, .5f);
 	}
 }
 

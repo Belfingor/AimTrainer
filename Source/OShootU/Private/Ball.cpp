@@ -15,23 +15,6 @@ ABall::ABall()
 
 }
 
-void ABall::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
-AShooterPlayer* ABall::GetShooterPlayer()
-{
-	UWorld* World = GetWorld();
-	if (!World) return nullptr;
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	if (!PlayerController) return nullptr;
-	AShooterPlayer* Player = Cast<AShooterPlayer>(PlayerController->GetPawn());
-
-	return Player;
-}
-
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -53,7 +36,6 @@ void ABall::TakeHit()
 			Player->AdjustPlayerHealth(-WrongBallHealthPenalty);
 		}
 	}
-	
 }
 
 void ABall::RemoveBallFromWall()
@@ -63,6 +45,23 @@ void ABall::RemoveBallFromWall()
 	MyOwner->RemoveBallFromArray(this);
 	Destroy();
 	MyOwner->CheckIfNeedResetBalls();
+}
+
+void ABall::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+AShooterPlayer* ABall::GetShooterPlayer()
+{
+	UWorld* World = GetWorld();
+	if (!World) return nullptr;
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController) return nullptr;
+	AShooterPlayer* Player = Cast<AShooterPlayer>(PlayerController->GetPawn());
+
+	return Player;
 }
 
 void ABall::SetBallColor(FLinearColor Color)

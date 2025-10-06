@@ -25,14 +25,17 @@ public:
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 	void Shoot();
 
+	
+
 protected:
 	virtual void BeginPlay() override;
-
 	
 private:
 	void PlayShootSound();
 	void SpawnMuzzleFlashEffect();
+	void InitIgnoredActors();
 	TObjectPtr<UOShootUUserSettings> GetUserSettings() const;
+	void CalculateLineTrace();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
@@ -40,9 +43,9 @@ private:
 	TObjectPtr<USoundBase> ShootSound;
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<UNiagaraSystem> MuzzleFlashNiagaraSystem;
-
 	TObjectPtr<UOShootUUserSettings> Settings;
+	const float LineTraceForwardVectorLength = 1000000.f;
 
 	FCollisionQueryParams LineTraceParams;
-
+	TArray<TObjectPtr<AActor>> ActorsToIgnore;
 };
