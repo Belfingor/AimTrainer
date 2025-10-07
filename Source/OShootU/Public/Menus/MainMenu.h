@@ -27,6 +27,8 @@ public:
 	void SettingsButtonPressed();
 	UFUNCTION(BlueprintCallable)
 	void ReturnButtonPressed();
+	UFUNCTION(BlueprintCallable)
+	void HowToPlayButtonPressed();
 
 	//----------------------------------Settings-----------------------------------
 	UFUNCTION(BlueprintCallable)

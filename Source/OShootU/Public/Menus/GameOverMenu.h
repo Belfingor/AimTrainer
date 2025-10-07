@@ -6,6 +6,7 @@
 #include "Menus/MenuBase.h"
 #include "GameOverMenu.generated.h"
 
+class UMySaveGame;
 class UTextBlock;
 
 UCLASS()
@@ -24,6 +25,10 @@ public:
 
 private:
 	void SetPlayerScoreString(int32 Score);
+	void SetPlayerRecordString(int32 Score);
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RecordText;
+	TObjectPtr<UMySaveGame> GameSaveData;
 };

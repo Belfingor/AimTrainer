@@ -3,6 +3,9 @@
 
 #include "Menus/MenuBase.h"
 #include "GameFramework/PlayerController.h"
+#include "Settings/OShootUUserSettings.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMenuBase::Setup(bool ShowMouseCursor)
 {
@@ -17,6 +20,8 @@ void UMenuBase::Setup(bool ShowMouseCursor)
 
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = ShowMouseCursor;
+
+	Settings = Cast<UOShootUUserSettings>(UGameUserSettings::GetGameUserSettings());
 }
 
 void UMenuBase::Teardown()
@@ -31,4 +36,10 @@ void UMenuBase::Teardown()
 	FInputModeGameOnly InputMode;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = false;
+}
+
+void UMenuBase::PlayButtonPressSound()
+{
+	if (!ButtonSound || !Settings) return;
+	UGameplayStatics::PlaySound2D(this, ButtonSound, Settings->GetMasterVolume());
 }

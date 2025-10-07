@@ -20,6 +20,7 @@ class UPauseMenu;
 class UGameOverMenu;
 class UGameStartCountdownMenu;
 class UOShootUUserSettings;
+class UMySaveGame;
 
 
 UCLASS()
@@ -37,7 +38,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	//-------------------------------Input Maping----------------------------------
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> PlayerMappingContext;
@@ -56,7 +56,7 @@ protected:
 	TObjectPtr<AWeapon> Weapon;
 	float MouseSensitivityModifier = 1.f;
 	float MouseSensitivityModifierRange;
-
+	//-----------------------------------------------------------------------------
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UMenuBase> PauseMenuClass;
 	UPROPERTY(EditAnywhere, Category = "UI")
@@ -74,7 +74,8 @@ private:
 	void InitGameOverMenu();
 	void InitStartGameCountdownMenu();
 	void ApplySensitivitySettingsToPlayer();
-
+	void InitGameSaveData();
+	//-----------------------------------------------------------------------------
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> ViewCamera;
 	UPROPERTY(VisibleAnywhere)
@@ -93,22 +94,29 @@ private:
 	const int32 ClearWallHealthRegen = 3;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerScore = 0;
+	int32 RecordScore;
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	int32 PlayerHealth = 10;
 	const int32 PlayerMaxHealth = 10;
 	const int32 ExpiredTimerHealthPenalty = 2;
 	bool bPassedInitialTimer = false;
-
+	//-----------------------------------------------------------------------------
+	const FString SaveSlotName = TEXT("SaveSlot1");
+	const int32 SaveGameUserIndex = 0;
+	//-----------------------------------------------------------------------------
 	UPROPERTY()
 	TObjectPtr<UPauseMenu> PauseMenu;
 	UPROPERTY()
 	TObjectPtr<UGameOverMenu> GameOverMenu;
 	UPROPERTY()
 	TObjectPtr<UGameStartCountdownMenu> CountdownMenu;
+	TObjectPtr<UMySaveGame> GameSaveData;
 
 public:
 	bool GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWolrdDirection);
 	int32 GetClearWallScore() { return ClearWallScore; }
 	int32 GetClearWallHealthRegen() { return ClearWallHealthRegen; }
 	FLinearColor GetActiveColor() { return ActiveColor; }
+	void SetPlayerRecordScore(int32 value) { RecordScore = value; }
+	int32 GetPlayerRecordScore() { return RecordScore; }
 };

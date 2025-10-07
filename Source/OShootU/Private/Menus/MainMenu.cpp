@@ -34,10 +34,11 @@ void UMainMenu::StartGameButtonPressed()
 {
 	Teardown();
 	UGameplayStatics::OpenLevel(GetWorld(), GameMapName);
-
 }
+
 void UMainMenu::ExitButtonPressed()
 {
+	Super::PlayButtonPressSound();
 	UWorld* World = GetWorld();
 	if (World)
 	{
@@ -51,6 +52,7 @@ void UMainMenu::ExitButtonPressed()
 
 void UMainMenu::SettingsButtonPressed()
 {
+	Super::PlayButtonPressSound();
 	if (WidgetMenuSwitcher)
 	{
 		WidgetMenuSwitcher->SetActiveWidgetIndex(SettingsWidgetIndex);
@@ -59,10 +61,16 @@ void UMainMenu::SettingsButtonPressed()
 
 void UMainMenu::ReturnButtonPressed()
 {
+	Super::PlayButtonPressSound();
 	if (WidgetMenuSwitcher)
 	{
 		WidgetMenuSwitcher->SetActiveWidgetIndex(MainMenuWidgetIndex);
 	}
+}
+
+void UMainMenu::HowToPlayButtonPressed()
+{
+	Super::PlayButtonPressSound();
 }
 
 float UMainMenu::ApplySentitivitySettings()

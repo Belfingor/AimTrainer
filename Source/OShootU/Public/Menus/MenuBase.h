@@ -6,9 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "MenuBase.generated.h"
 
-/**
- * 
- */
+class USoundBase;
+class UOShootUUserSettings;
+
 UCLASS()
 class OSHOOTU_API UMenuBase : public UUserWidget
 {
@@ -18,8 +18,12 @@ public:
 	virtual void Setup(bool ShowMouseCursor);
 	UFUNCTION(BlueprintCallable)
 	virtual void Teardown();
+	virtual void PlayButtonPressSound();
 
 protected:
 	FName MainMenuMapName = TEXT("MainMenuMap");
 	FName PlayingMapName = TEXT("PlayingMap");
+	TObjectPtr<UOShootUUserSettings> Settings;
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<USoundBase> ButtonSound;
 };

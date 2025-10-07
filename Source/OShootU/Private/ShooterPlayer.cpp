@@ -17,6 +17,8 @@
 #include "Menus/GameOverMenu.h"
 #include "Menus/GameStartCountdownMenu.h"
 #include "Settings/OShootUUserSettings.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameSave/MySaveGame.h"
 
 AShooterPlayer::AShooterPlayer()
 {
@@ -33,6 +35,7 @@ AShooterPlayer::AShooterPlayer()
 	ViewCamera->SetupAttachment(SkeletalMesh);
 
 	MouseSensitivityModifierRange = FMath::Clamp(MouseSensitivityModifier, 0.1f, 1.f);
+	InitGameSaveData();
 }
 
 void AShooterPlayer::Tick(float DeltaTime)
@@ -99,6 +102,8 @@ void AShooterPlayer::BeginPlay()
 	bPassedInitialTimer = true; // Avoid deducting Health on first timer set
 	ApplySensitivitySettingsToPlayer();
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShooterPlayer::InitStartGameCountdownMenu);
+	if (GameSaveData) RecordScore = GameSaveData->PlayerScoreRecord;
+	UE_LOG(LogTemp, Warning, TEXT("Pre-loaded record: %d"), RecordScore);
 }
 
 void AShooterPlayer::Look(const FInputActionValue& Value)
@@ -211,6 +216,13 @@ void AShooterPlayer::InitGameOverMenu()
 	APlayerController* PlayerController = GetPlayerController();
 	if (!PlayerController) return;
 
+	//Saving Score Record if needed
+	if (GameSaveData && PlayerScore > RecordScore)
+	{
+		GameSaveData->PlayerScoreRecord = PlayerScore;
+		UGameplayStatics::SaveGameToSlot(GameSaveData, SaveSlotName, 0);
+	}
+
 	GameOverMenu = CreateWidget<UGameOverMenu>(PlayerController, GameOverMenuClass);
 	GameOverMenu->AddToViewport();
 	if (GameOverMenu)
@@ -255,4 +267,16 @@ bool AShooterPlayer::GetCrosshairTrace(FVector& OutWorldLocation, FVector& OutWo
 		return true;
 	}	
 	return false;
+}
+
+void AShooterPlayer::InitGameSaveData()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlotName, 0))
+	{
+		GameSaveData = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
+	}
+	else
+	{
+		GameSaveData = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	}
 }
